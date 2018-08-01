@@ -25,5 +25,30 @@ object Chapter2 {
     _fib(n, 0, 1)
   }
 
+  // Exercise 2.2
+  // Implement isSorted, which checks whether an Array[A] is sorted according to the given comparison function
+  def isSorted[A](as: Array[A], ordered: (A, A) => Boolean): Boolean = {
+    
+    @tailrec
+    def _isSorted[A](n:Int): Boolean = {
+      if (n >= as.length - 1 ) true
+      else if (ordered(as(n),as(n+1))) _isSorted(n+1)
+      else false
+    }
+
+    _isSorted(0)
+  }
+
+  def main(args: Array[String]) = {
+    
+    assert(fib(1) == 1)
+    assert(fib(3) == 2)
+    assert(fib(5) == 5)
+
+    assert(isSorted(Array(1), (x:Int, y:Int) => x <= y))
+    assert(isSorted(Array(1,2), (x:Int, y:Int) => x <= y))
+    assert(!isSorted(Array(1,0), (x:Int, y:Int) => x <= y))
+    assert(isSorted(Array(1,2,3), (x:Int, y:Int) => x <= y))
+  }
 
 }

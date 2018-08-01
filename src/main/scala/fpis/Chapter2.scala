@@ -39,6 +39,22 @@ object Chapter2 {
     _isSorted(0)
   }
 
+  // Exercise 2.3
+  // Takes a function f that takes two parameters A, B, and partially applies f, and 
+  // returns a function that only takes in one parameter A.
+  def curry[A,B,C](f:(A,B) => C): A => (B => C) =  
+    (a: A) => (b:B) => f(a,b)
+
+  // Exercise 4: Implement `uncurry`
+  def uncurry[A,B,C](f: A => B => C): (A, B) => C =
+    (a:A, b:B) => f(a)(b)
+
+
+  // Exercise 5: Implement `compose`
+  def compose[A,B,C](f: B => C, g:A => B): A => C =
+    (a:A) => f(g(a))
+
+
   def main(args: Array[String]) = {
     
     assert(fib(1) == 1)

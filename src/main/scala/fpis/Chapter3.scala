@@ -49,19 +49,41 @@ object List {
     
 
   // Exercise 3.4
-  def drop[A](l: List[A], n: Int): List[A] = ???
-
+  // Generalize tail to a the function drop, which removes the firest n elements
+  // from a list. Not ethat this function takes time proportional only to the
+  // enumber of elements being dropped - we don't need to make a copy of the entire List. 
+  def drop[A](l: List[A], n: Int): List[A] =
+    if (n <= 0) l
+    else 
+      l match {
+        case Nil => Nil
+        case Cons(_, t) => drop(t, n - 1)
+      }
 
   // Exercise 3.5
-  def drop[A](l: List[A], n: Int): List[A] = ???
+  // Implement dropWhile, which removes elements fromthe list prefix as 
+  // long as they match a predicate
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = 
+    l match { 
+      case Nil => Nil
+      case Cons(x, t) => 
+        if (f(x)) 
+          dropWhile(t, f)
+        else 
+          l
+    }
 
   // Exercise 3.6
-  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = ???
+  // Implement a function init, that returns a List consisting of all but the last element of alist. 
+  def init[A](l: List[A]): List[A] = 
+    l match {
+      case Nil => Nil
+      case Cons(x, Nil) => Nil
+      case Cons(x, t) => Cons(x, init(t))
+    }
+
 
   // Exercise 3.7
-  def init[A](l: List[A]): List[A] = ???
-
-  // Exercise 3.9
   def length[A](l: List[A]): Int = ???
 
   // Exercise 3.10

@@ -83,8 +83,43 @@ object List {
     }
 
 
+  def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B =
+    as match {
+      case Nil => z
+      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+    }
+
   // Exercise 3.7
-  def length[A](l: List[A]): Int = ???
+  //Can product , implemented using foldRight , immediately halt the recursion and
+  // return 0.0 if it encounters a 0.0 ? Why or why not? Consider how any short-circuiting
+  //might work if you call foldRight with a large list. This is a deeper question that we’ll
+  //return to in chapter 5.
+  //
+  //No - the execution cannot be halted if a zero is encountered.
+  //
+  def product_old(ds: List[Double]): Double = ds match {
+    case Nil => 1.0
+    case Cons(0.0, _) => 0.0
+    case Cons(x,xs) => x * product(xs)
+  }
+
+ 
+  def product(ds: List[Double]): Double = 
+    foldRight(ds, 1.0)(_*_)
+
+  // Exercise 3.8
+  // See what happens when you pass Nil and Cons themselves to foldRight , like this:
+  // foldRight(List(1,2,3), Nil:List[Int])(Cons(_,_)) . What do you think this
+  // says about the relationship between foldRight and the data constructors of List ?
+  //
+  // It behaves he same way. 
+  val y = foldRight(List(1,2,3), Nil:List[Int])(Cons(_,_))
+
+
+  //EXERCISE 3.9
+  //Compute the length of a list using foldRight .
+  def length[A](as: List[A]): Int = 
+    foldRight(as, 0)((x:A, y:Int) => y + 1)
 
   // Exercise 3.10
   def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???

@@ -122,10 +122,29 @@ object List {
     foldRight(as, 0)((x:A, y:Int) => y + 1)
 
   // Exercise 3.10
-  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???
+  //
+  // Our implementation of foldRight is not tail-recursive and will result in a StackOver-
+  // flowError for large lists (we say it’s not stack-safe). Convince yourself that this is the
+  // case, and then write another general list-recursion function, foldLeft , that is
+  // Recursion over lists and generalizing to higher-order functions
+  // tail-recursive, using the techniques we discussed in the previous chapter. Here is its
+  // def foldLeft[A,B](as: List[A], z: B)(f: (B, A) => B): B
+  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = 
+    l match {
+      case Nil => z
+      case Cons(x, xs) => foldLeft(xs, f(z,x))(f)
+    }
 
   // Exercise 3.11
-  def map[A,B](l: List[A])(f: A => B): List[B] = ???
+  //Write sum , product , and a function to compute the length of a list using foldLeft .
+  def sumFoldLeft(lst: List[Int]): Int  =
+    foldLeft(lst, 0)(_+_)
+
+  def productFoldLeft(lst: List[Int]): Int  =
+    foldLeft(lst, 1)(_*_)
+
+  def lengthFoldLeft[A](lst: List[A]): Int = 
+    foldLeft(lst, 0)((x:Int,y:A) => x + 1)
 }
 
 object Chapter3 {

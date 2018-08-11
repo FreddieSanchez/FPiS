@@ -145,7 +145,32 @@ object List {
 
   def lengthFoldLeft[A](lst: List[A]): Int = 
     foldLeft(lst, 0)((x:Int,y:A) => x + 1)
+
+  // Exercise 3.12 
+  // Write a function that returns the reverse of a list (given List(1,2,3) it returns
+  // List(3,2,1) ). See if you can write it using a fold.
+  def reverse[A](lst: List[A]):List[A] = 
+    foldLeft(lst,Nil:List[A])((x:List[A], y:A) => Cons(y,x))
+
+  // Exercise 3.14
+  // Implement append in terms of either foldLeft or foldRight .
+  def appendFoldRight[A](lst:List[A], a:List[A]) = 
+    foldRight(lst,a)(Cons(_,_))
+
+  // Exercise 3.16
+  // Write a function that transforms a list of integers by adding 1 to each element.
+  // (Reminder: this should be a pure function that returns a new List !)
+  def add1(lst: List[Int]): List[Int] = 
+    foldRight(lst, Nil:List[Int])((x:Int, y:List[Int]) => Cons(x+1, y))
+
+  // Exercise 3.17
+  // Write a function that turns each value in a List[Double] into a String . You can use
+  // the expression d.toString to convert some d: Double to a String .
+  def listDoubleToString(lst:List[Double]):String = ???
+
+
 }
+
 
 object Chapter3 {
   import fpis.List

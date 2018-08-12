@@ -164,9 +164,33 @@ object List {
     foldRight(lst, Nil:List[Int])((x:Int, y:List[Int]) => Cons(x+1, y))
 
   // Exercise 3.17
-  // Write a function that turns each value in a List[Double] into a String . You can use
+  // Write a function that turns each value in a List[Double] into a List[String]. You can use
   // the expression d.toString to convert some d: Double to a String .
-  def listDoubleToString(lst:List[Double]):String = ???
+  def listDoubleToString(lst:List[Double]):List[String] =
+    foldRight(lst, Nil:List[String])((x:Double, y: List[String]) => Cons(x.toString, y))
+
+  // Exercise 3.18
+  // Write a function map that generalizes modifying each element in a list while maintain-
+  // ing the structure of the list. Here is its signature: 
+  def map[A,B](as: List[A])(f: A => B): List[B] = 
+    foldRight(as, Nil:List[B])((x:A, y: List[B]) => Cons(f(x), y))
+
+  // EXERCISE 3.19
+  // Write a function filter that removes elements from a list unless they satisfy a given
+  // predicate. Use it to remove all odd numbers from a List[Int] .
+  def filterFoldRight[A](as: List[A])(f:A => Boolean): List[A] = 
+    foldRight(as, Nil:List[A]) ((x, y) => if (f(x)) Cons(x,y) else y)
+  
+  def filterExplict[A](as: List[A])(f: A => Boolean): List[A] = 
+    as match {
+      case Cons(x, xs) => { 
+        if (f(x)) Cons(x, filterExplict(xs)(f))
+        else filterExplict(xs)(f)
+      }
+      case _ => Nil
+    }
+
+
 
 
 }

@@ -1,5 +1,4 @@
-package fpis
-
+package fpis 
 sealed trait List[+A]
 case object Nil extends List[Nothing]
 case class Cons[+A](head:A, tail:List[A]) extends List[A]
@@ -157,6 +156,14 @@ object List {
   def appendFoldRight[A](lst:List[A], a:List[A]) = 
     foldRight(lst,a)(Cons(_,_))
 
+  // Exercise 3.15
+  // Hard: Write a function that concatenates a list of lists into a single list. Its runtime
+  // should be linear in the total length of all lists. Try to use functions we have already
+  // defined.
+
+  def concat[A](lsts:List[List[A]]): List[A] = 
+    foldRight(lsts, Nil:List[A])(appendFoldRight)
+
   // Exercise 3.16
   // Write a function that transforms a list of integers by adding 1 to each element.
   // (Reminder: this should be a pure function that returns a new List !)
@@ -191,8 +198,73 @@ object List {
     }
 
 
+  //  EXERCISE 3.20
+  //  Write a function flatMap that works like map except that the function given will return
+  //  a list instead of a single result, and that list should be inserted into the final resulting
+  //  list. Here is its signature:
+  //  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B]
+  //  For instance, flatMap(List(1,2,3))(i => List(i,i)) should result in
+  //  List(1,1,2,2,3,3) .
 
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = 
+    concat(map(as)(f))
 
+  def flatMapFoldRight[A, B](as: List[A])(f: A => List[B]): List[B] = 
+    foldRight(as, Nil:List[B])((x:A, y: List[B]) => concat(List(f(x),y)))
+
+  //EXERCISE 3.21
+  //Use flatMap to implement filter .
+  def filterFlatMap[A](as:List[A])(f: A => Boolean) = 
+    flatMap(as)(a => if(f(a)) List(a) else Nil)
+
+  //EXERCISE 3.22
+  //Write a function that accepts two lists and constructs a new list by adding correspond-
+  //ing elements. For example, List(1,2,3) and List(4,5,6) become List(5,7,9) .
+  def addtwoList(a:List[Int], b:List[Int]): List[Int] =
+    (a,b) match {
+      case (_,Nil) => Nil
+      case (Nil, _) => Nil
+      case (Cons(x,xs), Cons(y,ys)) => Cons(x + y, addtwoList(xs, ys))
+    }
+
+  //EXERCISE 3.23
+  //Generalize the function you just wrote so that it’s not specific to integers or addition.
+  //Name your generalized function zipWith .
+  def zipWith[A,B,C](a:List[A], b:List[B])(f: (A,B) => C): List[C] =
+    (a,b) match {
+      case (_,Nil) => Nil
+      case (Nil, _) => Nil
+      case (Cons(x,xs), Cons(y,ys)) => Cons(f(x,y), zipWith(xs, ys)(f))
+    }
+
+  //  EXERCISE 3.24
+  //  Hard: As an example, implement hasSubsequence for checking whether a List con-
+  //  tains another List as a subsequence. For instance, List(1,2,3,4) would have
+  //  List(1,2) , List(2,3) , and List(4) as subsequences, among others. You may have
+  //  some difficulty finding a concise purely functional implementation that is also effi-
+  //  cient. That’s okay. Implement the function however comes most naturally. We’ll
+  //  return to this implementation in chapter 5 and hopefully improve on it. Note: Any
+  //  two values x and y can be compared for equality in Scala using the expression x == y .
+
+  @annotation.tailrec
+  def startsWith[A](sup:List[A], sub:List[A]): Boolean = {
+    (sup, sub) match { 
+      case (Nil, _) => false
+      case (_,Nil) => true
+      case (Cons(x,xs), Cons(y,ys)) => if (x==y) startsWith(xs,ys) else false
+    }
+  }
+
+  @annotation.tailrec
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean =  {
+    (sup, sub) match {
+      case (Nil, _) => false
+      case (_, Nil) => true
+      case (xs, ys) if startsWith(xs, ys) => true
+      case (Cons(x, xs), ys) => hasSubsequence(xs, ys)
+    }
+  }
+  
 }
 
 

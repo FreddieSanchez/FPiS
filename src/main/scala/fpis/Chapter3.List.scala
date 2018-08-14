@@ -1,4 +1,5 @@
-package fpis 
+package fpis.Chapter3
+
 sealed trait List[+A]
 case object Nil extends List[Nothing]
 case class Cons[+A](head:A, tail:List[A]) extends List[A]
@@ -269,12 +270,12 @@ object List {
 
 
 object Chapter3 {
-  import fpis.List
+  import fpis.Chapter3
 
   def main(args: Array[String]) = 
   {
-    assert(fpis.List.tail(fpis.List(1,2,3)) == fpis.List(2,3))
-    assert(fpis.List.tail(fpis.List(1)) == fpis.Nil)
+    assert(List.tail(List(1,2,3)) == List(2,3))
+    assert(List.tail(List(1)) == Nil)
   }
 
 

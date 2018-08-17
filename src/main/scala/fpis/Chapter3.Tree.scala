@@ -7,10 +7,10 @@ case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
 object Tree {
     // EXERCISE 3.25
     // Write a function size that counts the number of nodes (leaves and branches) in a tree.
-    def count[A](t:Tree[A]): Int = 
+    def size[A](t:Tree[A]): Int = 
       t match { 
         case Leaf(_) => 1
-        case Branch(left, right) => 1 + count(left) + count(right)
+        case Branch(left, right) => 1 + size(left) + size(right)
       }
 
     // EXERCISE 3.26
@@ -31,5 +31,36 @@ object Tree {
           case Leaf(x) => 0
           case Branch(left, right) => depth(left) max depth(right)
         }
+
+    // EXERCISE 3.28
+    // Write a function map , analogous to the method of the same name on List , that modi-
+    // fies each element in a tree with a given function.
+    def map[A,B](t:Tree[A])(f: A => B):Tree[B] = 
+        t match { 
+          case Leaf(x) => Leaf(f(x))
+          case Branch(left, right) => Branch(map(left)(f), map(right)(f))
+        }
+
+    //  EXERCISE 3.29
+    //  Generalize size , maximum , depth , and map , writing a new function fold that abstracts
+    //  over their similarities. Reimplement them in terms of this more general function. Can
+    //  you draw an analogy between this fold function and the left and right folds for List ?
+    def fold[A,B](t:Tree[A])(f:A => B)(g:(B,B) => B): B = 
+        t match { 
+          case Leaf(x) => f(x)
+          case Branch(left, right) =>  g(fold(left)(f)(g), fold(right)(f)(g))
+        }
+
+    def sizeViaFold[A](t:Tree[A]):Int = 
+      fold(t)(a => 1)(1+ _ + _ )
+
+    def maximumViaFold(t:Tree[Int]):Int = 
+      fold(t)(a => a)(_ max _)
+
+    def depthViaFold[A](t:Tree[A]):Int = 
+      fold(t)(a => 0)(_ max _)
+
+    def mapViaFold[A,B](t:Tree[A])(f: A => B):Tree[B] = 
+      fold(t)(x => Leaf(f(x)):Tree[B])(Branch(_,_))
 }
     

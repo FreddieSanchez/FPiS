@@ -32,6 +32,18 @@ trait Either[+E, +A] {
   this flatMap(a => b.map(bb => f(a,bb)))
 
 
+  // EXERCISE 4.7
+  // Implement sequence and traverse for Either . These should return the first error
+  // that’s encountered, if there is one.
+  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = 
+    res match {
+      case Nil => Right(Nil)
+      case x::xs => x.flatMap((y:Either[E,A]) => sequence(xs).map((z:A) => z::_))
+    }
+
+  def traverse[E, A, B](as: List[A])(
+    f: A => Either[E, B]): Either[E, List[B]]
+
 }
 
 object Either {

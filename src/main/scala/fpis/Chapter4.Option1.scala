@@ -103,7 +103,7 @@ object Option {
   def traverse2[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = 
     a match { 
       case Nil => Some(Nil)
-      case h::t => map2(f(h),traverse(t)(f))(_::_)
+      case h::t => map2(f(h),traverse2(t)(f))(_::_)
     }
 
 

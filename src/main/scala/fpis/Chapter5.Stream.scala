@@ -1,10 +1,10 @@
 package fpis.Chapter5
 
-
-
 case object Empty extends Stream[Nothing]
 case class Cons[+A](head: () => A, tail: () => Stream[A]) extends Stream[A]
+
 import Stream._;
+
 trait Stream[+A] {
 
   // EXERCISE 5.1
@@ -46,6 +46,30 @@ trait Stream[+A] {
       case Cons(h, t) if (p(h())) => cons(h(), t().takeWhile(p))
       case _ => Empty
     }
+
+  // EXERCISE 5.4
+  // Implement forAll , which checks that all elements in the Stream match a given predi-
+  // cate. Your implementation should terminate the traversal as soon as it encounters a
+  // nonmatching value.
+  def foldRight[B](z: => B)(f: (A, => B) => B): B =
+  this match {
+    case Cons(h,t) => f(h(), t().foldRight(z)(f))
+    case _ => z
+  }
+
+  def exists(p: A => Boolean): Boolean =
+    foldRight(false)((a, b) => p(a) || b)
+
+  def forAll(p: A => Boolean): Boolean = 
+    foldRight(true)((a,b) => p(a) && b)
+
+  // EXERCISE 5.5
+  // Use foldRight to implement takeWhile .
+  def takeWhileFold(p: A => Boolean): Stream[A] = 
+    foldRight(empty[A])((a,b) => if (p(a)) cons(a ,b) else Stream.empty)
+
+
+  
 }
 
 object Stream {

@@ -68,7 +68,27 @@ trait Stream[+A] {
   def takeWhileFold(p: A => Boolean): Stream[A] = 
     foldRight(empty[A])((a,b) => if (p(a)) cons(a ,b) else Stream.empty)
 
+  // EXERCISE 5.6
+  // Hard: Implement headOption using foldRight .
+  def headOption: Option[A] = 
+    foldRight(None:Option[A])((h, t) => Some(h))
 
+
+  // EXERCISE 5.7
+  // Implement map , filter , append , and flatMap using foldRight . The append method
+  // should be non-strict in its argument.
+  def mapFoldRight[B](f: A => B): Stream[B] = 
+    foldRight(empty[B])((h, t) => cons(f(h), t))
+
+  // Had trouble with the the covariant vs contravariants
+  def appendFoldRight[B >: A](s: Stream[B]): Stream[B] =
+    foldRight(s)((h, t) => cons(h, t))
+
+  def filterFoldRight(f: A => Boolean): Stream[A] = 
+    foldRight(empty[A])((h, t) => if(f(h)) cons(h, t) else t)
+
+  def flatMapFoldRight[B](f: A => Stream[B]): Stream[B] = 
+    foldRight(empty[B])((h, t) => f(h) appendFoldRight t)
   
 }
 
